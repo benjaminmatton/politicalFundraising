@@ -13,14 +13,6 @@ import java.util.Optional;
  */
 @Repository
 public interface CandidateRepository extends MongoRepository<Candidate, String> {
-    
-    /**
-     * Custom query method to find candidates by party affiliation.
-     * 
-     * @param party The political party to search for
-     * @return A list of Candidate objects belonging to the specified party
-     */
-    List<Candidate> findByParty(String party);
 
     /**
      * Finds a candidate by their unique identifier.
@@ -34,4 +26,26 @@ public interface CandidateRepository extends MongoRepository<Candidate, String> 
      * Finds candidates by their name, ignoring case.
      */
     List<Candidate> findByNameContainingIgnoreCase(String name);
+
+    /**
+     * Creates a new candidate.
+     * @param candidate The candidate object to be created
+     * @return The created candidate
+     */
+    Candidate createCandidate(Candidate candidate);
+
+    /**
+     * Updates an existing candidate.
+     * @param candidate The candidate object to be updated
+     * @return The updated candidate
+     */
+    Candidate updateCandidate(Candidate candidate);
+
+    /**
+     * Deletes a candidate by their unique identifier.
+     * @param candidateId The ID of the candidate to delete
+     */
+    void deleteCandidate(String candidateId);
+
+    
 }

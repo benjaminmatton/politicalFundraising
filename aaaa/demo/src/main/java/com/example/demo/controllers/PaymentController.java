@@ -38,7 +38,7 @@ public class PaymentController {
     public ResponseEntity<Map<String, String>> createPaymentIntent(@RequestBody PaymentRequest paymentRequest) {
         try {
             // Create a payment intent using the PaymentService
-            String clientSecret = paymentService.createPaymentIntent(paymentRequest.getAmount(), paymentRequest.getCurrency());
+            String clientSecret = paymentService.createPaymentIntent(paymentRequest.getAmount(), paymentRequest.getCurrency(), paymentRequest.getCandidateId(), paymentRequest.getUserId());
             
             // Prepare the response with the client secret
             Map<String, String> response = new HashMap<>();

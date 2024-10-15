@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.example.demo.dto.DonationRequest;
 import com.example.demo.dto.PaymentStatusUpdateRequest;
-
+import com.example.demo.services.PaymentService;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +28,8 @@ public class DonationController {
     @Autowired
     private DonationRepository donationRepository;
 
+    @Autowired
+    private PaymentService paymentService;
     @Autowired
     private DonationService donationService;
 
@@ -63,23 +65,25 @@ public class DonationController {
 
     /**
      * Processes a donation request and creates a Stripe PaymentIntent.
-     * @param donationRequest The donation request containing user ID, candidate ID, and amount
+     * @param donationRequest The donation request containing amount and currency
      * @return ResponseEntity containing the client secret for the PaymentIntent
      */
     @PostMapping("/donate")
     public ResponseEntity<Map<String, String>> donate(@RequestBody DonationRequest donationRequest) {
         try {
-            String clientSecret = donationService.donate(
-                donationRequest.getUserId(),
+            String clientSecret = paymentService.createPaymentIntent(
+                donationRequest.getAmount(),
+                donationRequest.getCurrency(),
                 donationRequest.getCandidateId(),
-                donationRequest.getAmount()
+                donationRequest.getUserId()
             );
 
             Map<String, String> response = new HashMap<>();
             response.put("clientSecret", clientSecret);
             return ResponseEntity.ok(response);
         } catch (StripeException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Map.of("error", "Payment processing failed."));
         }
     }
 

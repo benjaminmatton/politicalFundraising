@@ -27,4 +27,11 @@ public interface IssueRepository extends MongoRepository<Issue, String> {
      * @return An Optional containing the Issue if found, or empty if not found
      */
     Optional<Issue> findByName(String name);
+
+    /**
+     * Creates a new issue.
+     * @param issue The issue object to be created
+     * @return The created issue
+     */
+    Issue createIssue(Issue issue);
 }

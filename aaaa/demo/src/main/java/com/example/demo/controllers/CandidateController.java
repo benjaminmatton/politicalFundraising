@@ -51,16 +51,6 @@ public class CandidateController {
     }
 
     /**
-     * Retrieves candidates by their party affiliation.
-     * @param party The party name
-     * @return List of candidates belonging to the specified party
-     */
-    @GetMapping("/party/{party}")
-    public List<Candidate> getCandidatesByParty(@PathVariable String party) {
-        return candidateRepository.findByParty(party);
-    }
-
-    /**
      * Creates a new candidate.
      * @param candidate The candidate object to be created
      * @return The created candidate
@@ -103,4 +93,6 @@ public class CandidateController {
             })
             .orElse(ResponseEntity.notFound().build());
     }
+
+    
 }

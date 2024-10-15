@@ -11,6 +11,12 @@ public class PaymentRequest {
     /** The currency of the payment */
     private String currency;
 
+    /** The candidate ID of the payment */
+    private String candidateId;
+
+    /** The user ID of the payment */
+    private String userId;
+
     /**
      * Retrieves the amount of the payment.
      * @return The payment amount as a double
@@ -41,5 +47,37 @@ public class PaymentRequest {
      */
     public void setCurrency(String currency) {
         this.currency = currency;
+    }
+
+    /**
+     * Retrieves the candidate ID of the payment.
+     * @return The candidate ID as a String
+     */
+    public String getCandidateId() {
+        return candidateId;
+    }
+
+    /**
+     * Sets the candidate ID of the payment.
+     * @param candidateId The candidate ID to set
+     */
+    public void setCandidateId(String candidateId) {
+        this.candidateId = candidateId;
+    }
+
+    /**
+     * Retrieves the user ID of the payment.
+     * @return The user ID as a String
+     */
+    public String getUserId() {
+        return userId;
+    }
+
+    /**
+     * Sets the user ID of the payment.
+     * @param userId The user ID to set
+     */
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }

@@ -27,6 +27,11 @@ public class Issue {
     /** Map of candidates to their scores on this issue */
     private Map<Candidate, Double> candidateScores = new HashMap<>();
 
+    public Issue(String id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     /**
      * Gets the map of candidate scores for this issue.
      * @return A map of Candidate objects to their scores (as Double)

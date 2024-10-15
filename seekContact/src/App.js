@@ -6,6 +6,8 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import Signup from './pages/Signup';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
+import IssueSearch from './pages/IssueSearch';
+import Donation from './pages/Donation'; // Added import for Donation component
 
 // Import authentication utility
 import { isAuthenticated } from './services/auth';
@@ -17,9 +19,13 @@ function App() {
         <Router>
             {/* Define routes */}
             <Routes>
+                {/* Default Route */}
+                <Route path="/" element={<IssueSearch />} />
+
                 {/* Public Routes */}
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/donation" element={<Donation />} /> {/* Added route for Donation page */}
                 
                 {/* Protected Route */}
                 <Route

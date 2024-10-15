@@ -37,12 +37,15 @@ public class PaymentService {
      * @return The client secret for the created PaymentIntent
      * @throws StripeException If there's an error with the Stripe API
      */
-    public String createPaymentIntent(double amount, String currency) throws StripeException {
+    public String createPaymentIntent(double amount, String currency, String candidateId, String userId) throws StripeException {
         // Create parameters for the PaymentIntent
         PaymentIntentCreateParams params =
             PaymentIntentCreateParams.builder()
                 .setAmount((long) (amount * 100)) // Convert amount to cents
                 .setCurrency(currency)
+                .putMetadata("candidateId", candidateId)  // Store candidate info
+                .putMetadata("userId", userId)  // Track the donor
+                .putMetadata("timestamp", String.valueOf(System.currentTimeMillis()))  // Store creation time
                 .build();
 
         // Create the PaymentIntent using Stripe API
@@ -51,4 +54,6 @@ public class PaymentService {
         // Return the client secret for the frontend to use
         return intent.getClientSecret();
     }
+
+    
 }

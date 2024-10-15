@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "candidates")
 public class Candidate {
     /** Unique identifier for the candidate */
+
     @Id
     private String id;
     
@@ -29,6 +30,15 @@ public class Candidate {
     
     /** Map of issue identifiers to the candidate's stance scores on those issues */
     private Map<String, Double> issueScores = new HashMap<>();
+
+    public Candidate(String id, String name, String party, String description, String imageUrl, Map<String, Double> issueScores) {
+        this.id = id;
+        this.name = name;
+        this.party = party;
+        this.description = description;
+        this.imageUrl = imageUrl;
+        this.issueScores = issueScores;
+    }
 
     // Getters and setters
     /**

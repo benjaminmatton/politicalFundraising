@@ -16,6 +16,9 @@ public class DonationRequest {
     /** The amount of the donation */
     private double amount;
 
+    /** The currency of the donation */
+    private String currency;
+
     /**
      * Retrieves the user ID associated with this donation request.
      * @return The user ID as a String
@@ -39,4 +42,13 @@ public class DonationRequest {
     public double getAmount() {
         return amount;
     }       
+
+    /**
+     * Retrieves the currency of the donation.
+     * @return The currency as a String
+     */
+    public String getCurrency() {
+        return currency;
+    
+}
 }
