@@ -32,6 +32,10 @@ public class WebSecurityConfig {
             .authorizeHttpRequests(authorize -> authorize
                 // Allow all requests to the authentication endpoints
                 .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/candidates/**").permitAll()
+                .requestMatchers("/api/issues/**").permitAll()
+                .requestMatchers("/api/donations/**").permitAll()
+                .requestMatchers("/api/payments/**").permitAll()
                 // Require authentication for all other requests
                 .anyRequest().authenticated()
             )

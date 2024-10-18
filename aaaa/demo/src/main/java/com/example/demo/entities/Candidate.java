@@ -14,7 +14,7 @@ public class Candidate {
     /** Unique identifier for the candidate */
 
     @Id
-    private String id;
+    private String _id;
     
     /** Name of the candidate */
     private String name;
@@ -31,12 +31,9 @@ public class Candidate {
     /** Map of issue identifiers to the candidate's stance scores on those issues */
     private Map<String, Double> issueScores = new HashMap<>();
 
-    public Candidate(String id, String name, String party, String description, String imageUrl, Map<String, Double> issueScores) {
-        this.id = id;
+    public Candidate(String name, String party,  Map<String, Double> issueScores) {
         this.name = name;
         this.party = party;
-        this.description = description;
-        this.imageUrl = imageUrl;
         this.issueScores = issueScores;
     }
 
@@ -46,15 +43,7 @@ public class Candidate {
      * @return The candidate's ID
      */
     public String getId() {
-        return id;
-    }
-
-    /**
-     * Sets the candidate's unique identifier.
-     * @param id The ID to set
-     */
-    public void setId(String id) {
-        this.id = id;
+        return _id;
     }
 
     /**
@@ -136,4 +125,17 @@ public class Candidate {
     public void setIssueScores(Map<String, Double> issueScores) {
         this.issueScores = issueScores;
     }
+
+    /**
+    * Adds or updates the score for a specific issue in the candidate's issueScores map.
+ * @param issue The issue for which the score needs to be added or updated
+ * @param score The score to be added or updated
+ */
+    public void addIssueScore(String issue, Double score) {
+    if (this.issueScores == null) {
+        this.issueScores = new HashMap<>();
+    }
+        this.issueScores.put(issue, score);
+    }
+    
 }

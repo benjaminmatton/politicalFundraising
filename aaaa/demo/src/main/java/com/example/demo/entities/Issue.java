@@ -16,7 +16,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Issue {
     /** Unique identifier for the issue */
     @Id
-    private String id;
+    private String _id;
     
     /** Name of the issue */
     private String name;
@@ -25,10 +25,9 @@ public class Issue {
     private List<String> candidateIds = new ArrayList<>();
     
     /** Map of candidates to their scores on this issue */
-    private Map<Candidate, Double> candidateScores = new HashMap<>();
+    private Map<String, Double> candidateScores = new HashMap<>();
 
-    public Issue(String id, String name) {
-        this.id = id;
+    public Issue(String name) {
         this.name = name;
     }
 
@@ -36,7 +35,7 @@ public class Issue {
      * Gets the map of candidate scores for this issue.
      * @return A map of Candidate objects to their scores (as Double)
      */
-    public Map<Candidate, Double> getCandidateScores() {
+    public Map<String, Double> getCandidateScores() {
         return candidateScores;
     }
 
@@ -44,7 +43,7 @@ public class Issue {
      * Sets the map of candidate scores for this issue.
      * @param candidateScores A map of Candidate objects to their scores (as Double)
      */
-    public void setCandidateScores(Map<Candidate, Double> candidateScores) {
+    public void setCandidateScores(Map<String, Double> candidateScores) {
         this.candidateScores = candidateScores;
     }
 
@@ -53,15 +52,7 @@ public class Issue {
      * @return The issue's ID
      */
     public String getId() {
-        return id;
-    }
-
-    /**
-     * Sets the unique identifier of the issue.
-     * @param id The ID to set
-     */
-    public void setId(String id) {
-        this.id = id;
+        return _id;
     }
 
     /**

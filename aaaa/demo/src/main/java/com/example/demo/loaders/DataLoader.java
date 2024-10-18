@@ -27,16 +27,16 @@ public class DataLoader implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         // Clear any existing data to prevent duplicates (optional)
-        candidateRepository.deleteAll();
-        issueRepository.deleteAll();
-        // Seed the 'candidates' collection with some initial data
-        candidateRepository.createCandidate(new Candidate("1", "Alice Smith", "Democratic", "Alice is a reproductive rights advocate with a focus on protecting abortion access for all Americans.", "https://example.com/alice.jpg", Map.of("abortion", 85.0, "second amendment", 0.0)));
+        // candidateRepository.deleteAll();
+        // issueRepository.deleteAll();
+        // // Seed the 'candidates' collection with some initial data
+        // candidateRepository.createCandidate(new Candidate("1", "alice Smith", "D", Map.of("abortion", 85.0, "second amendment", 0.0)));
 
-        candidateRepository.createCandidate(new Candidate("2", "Bob Johnson", "Republican", "Bob is a Second Amendment expert with a focus on protecting gun rights and simplifying firearm regulations.", "https://example.com/bob.jpg", Map.of("second amendment", 90.0, "abortion", 40.0)));
+        // candidateRepository.createCandidate(new Candidate("2", "bob Johnson", "R", Map.of("second amendment", 90.0, "abortion", 40.0)));
 
-        // Seed the 'issues' collection with some initial data
-        issueRepository.createIssue(new Issue("1", "Abortion"));
-        issueRepository.createIssue(new Issue("2", "Second Amendment"));
+        // // Seed the 'issues' collection with some initial data
+        // issueRepository.createIssue(new Issue("1", "Abortion"));
+        // issueRepository.createIssue(new Issue("2", "Second Amendment"));
 
         System.out.println("Database seeded with initial data.");
     }

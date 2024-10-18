@@ -3,6 +3,7 @@ package com.example.demo.services;
 import com.example.demo.entities.Candidate;
 import com.example.demo.entities.Issue;
 import com.example.demo.repositories.IssueRepository;
+import com.example.demo.repositories.CandidateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,9 @@ public class IssueService {
     @Autowired
     private IssueRepository issueRepository;
 
+    @Autowired
+    private CandidateRepository candidateRepository;
+
     /**
      * Retrieves all issues from the repository.
      *
@@ -32,25 +36,15 @@ public class IssueService {
         return issueRepository.findAll();
     }
 
-    /**
-     * Finds issues belonging to a specific category.
-     *
-     * @param category The category to search for
-     * @return A list of Issue entities that belong to the specified category
-     */
-    public List<Issue> findIssuesByCategory(String category) {
-        return issueRepository.findByCategory(category);
-    }
-
-    /**
-     * Calculates the popularity of issues based on their occurrence.
-     *
-     * @return A map where the key is the issue name and the value is the count of occurrences
-     */
-    public Map<String, Long> getIssuePopularity() {
-        return issueRepository.findAll().stream()
-            .collect(Collectors.groupingBy(Issue::getName, Collectors.counting()));
-    }
+    // /**
+    //  * Calculates the popularity of issues based on their occurrence.
+    //  * need to make it so  ....
+    //  * @return A map where the key is the issue name and the value is the count of occurrences
+    //  */
+    // public Map<String, Long> getIssuePopularity() {
+    //     return issueRepository.findAll().stream()
+    //         .collect(Collectors.groupingBy(Issue::getName, Collectors.counting()));
+    // }
 
     /**
      * Retrieves the effective candidates for a specific issue along with their scores.
@@ -61,7 +55,32 @@ public class IssueService {
      */
     public Map<Candidate, Double> getEffectiveCandidatesForIssue(String issueName) {
         return issueRepository.findByName(issueName)
-            .map(Issue::getCandidateScores)
+            .map(issue -> {
+                Map<String, Double> candidateScores = issue.getCandidateScores();
+                return candidateScores.entrySet().stream()
+                    .flatMap(entry -> {
+                        String candidateId = entry.getKey();
+                        return candidateRepository.findById(candidateId).stream()
+                            .map(candidate -> Map.entry(candidate, entry.getValue()));
+                    })
+                    .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue
+                    ));
+            })
             .orElse(Collections.emptyMap());
+    }
+
+    /**
+     * Deletes all issues from the database.
+     */
+    public void deleteAllIssues() {
+        // Fetch all issues
+        List<Issue> issues = issueRepository.findAll();
+
+        // Iterate through each issue and delete it
+        for (Issue issue : issues) {
+            issueRepository.delete(issue);
+        }
     }
 }

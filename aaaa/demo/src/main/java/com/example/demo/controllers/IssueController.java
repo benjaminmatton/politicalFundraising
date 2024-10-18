@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -26,11 +27,12 @@ public class IssueController {
 
     /**
      * Retrieves all issues.
-     * @return List of all issues
+     * @return ResponseEntity containing a list of all issues
      */
     @GetMapping("/issues")
-    public List<Issue> getAllIssues() {
-        return issueService.findAllIssues();
+    public ResponseEntity<List<Issue>> getAllIssues() {
+        List<Issue> issues = issueService.findAllIssues();
+        return ResponseEntity.ok(issues);
     }
 
     /**
@@ -42,5 +44,14 @@ public class IssueController {
     public ResponseEntity<Map<Candidate, Double>> getEffectiveCandidates(@PathVariable String issueName) {
         Map<Candidate, Double> candidates = issueService.getEffectiveCandidatesForIssue(issueName);
         return ResponseEntity.ok(candidates);
+    }
+
+    /**
+     * Deletes all issues from the database.
+     */
+    @DeleteMapping("/issues/deleteAll")
+    public ResponseEntity<Void> deleteAllIssues() {
+        issueService.deleteAllIssues();
+        return ResponseEntity.noContent().build();
     }
 }

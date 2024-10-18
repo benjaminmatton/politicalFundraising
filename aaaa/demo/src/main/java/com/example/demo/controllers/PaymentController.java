@@ -7,6 +7,7 @@ import com.stripe.model.PaymentIntent;
 import com.stripe.net.Webhook;
 import com.stripe.param.PaymentIntentCreateParams;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -52,6 +53,9 @@ public class PaymentController {
         }
     }
 
+    @Value("${stripe.webhook.secret}")
+    private String webhookSecret;
+
     /**
      * Handles Stripe webhook events for payment processing.
      *
@@ -68,7 +72,7 @@ public class PaymentController {
             Event event = Webhook.constructEvent(
                 payload,
                 sigHeader,
-                "your_webhook_signing_secret"
+                webhookSecret
             );
 
             // Handle the event type

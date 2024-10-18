@@ -2,7 +2,6 @@ package com.example.demo.controllers;
 
 
 import com.example.demo.entities.Donation;
-import com.example.demo.repositories.DonationRepository;
 import com.example.demo.services.DonationService;
 import com.stripe.exception.StripeException;
 
@@ -25,8 +24,6 @@ import java.util.Map;
 @RequestMapping("/api/donations")
 public class DonationController {
 
-    @Autowired
-    private DonationRepository donationRepository;
 
     @Autowired
     private PaymentService paymentService;
@@ -34,33 +31,25 @@ public class DonationController {
     private DonationService donationService;
 
     /**
-     * Creates a new donation.
-     * @param donation The donation object to be created
-     * @return The created donation
-     */
-    @PostMapping
-    public Donation createDonation(@RequestBody Donation donation) {
-        return donationRepository.save(donation);
-    }
-
-    /**
      * Retrieves all donations made by a specific user.
      * @param userId The ID of the user
-     * @return List of donations made by the user
+     * @return ResponseEntity containing a list of donations made by the user
      */
     @GetMapping("/user/{userId}")
-    public List<Donation> getDonationsByUserId(@PathVariable String userId) {
-        return donationRepository.findByUserId(userId);
+    public ResponseEntity<List<Donation>> getDonationsByUserId(@PathVariable String userId) {
+        List<Donation> donations = donationService.getDonationsByUserId(userId);
+        return ResponseEntity.ok(donations);
     }
 
     /**
      * Retrieves all donations made to a specific candidate.
      * @param candidateId The ID of the candidate
-     * @return List of donations made to the candidate
+     * @return ResponseEntity containing a list of donations made to the candidate
      */
     @GetMapping("/candidate/{candidateId}")
-    public List<Donation> getDonationsByCandidateId(@PathVariable String candidateId) {
-        return donationRepository.findByCandidateId(candidateId);
+    public ResponseEntity<List<Donation>> getDonationsByCandidateId(@PathVariable String candidateId) {
+        List<Donation> donations = donationService.getDonationsByCandidateId(candidateId);
+        return ResponseEntity.ok(donations);
     }
 
     /**
@@ -97,4 +86,6 @@ public class DonationController {
         donationService.updateDonationStatus(request.getPaymentIntentId(), request.getStatus());
         return ResponseEntity.ok("Donation status updated");
     }
+
+    
 }

@@ -9,6 +9,7 @@ import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
 import com.stripe.param.PaymentIntentCreateParams;
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -25,17 +26,6 @@ public class DonationService {
      */
     @Autowired
     private DonationRepository donationRepository;
-
-    /**
-     * Processes a donation.
-     *
-     * @param donation The donation to process
-     * @return The processed and saved donation
-     */
-    public Donation processDonation(Donation donation) {
-        // Business logic for processing a donation
-        return donationRepository.save(donation);
-    }
 
     /**
      * Stripe API key injected from application properties.
@@ -59,21 +49,17 @@ public class DonationService {
      * @return The client secret for the created PaymentIntent
      * @throws StripeException If there's an error with the Stripe API
      */
-    public String donate(String userId, String candidateId, double amount) throws StripeException {
+    public String donate(Donation donation) throws StripeException {
         // 1. Create a PaymentIntent with Stripe
         PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
-            .setAmount((long) (amount * 100)) // Amount in cents
+            .setAmount((long) (donation.getAmount() * 100)) // Amount in cents
             .setCurrency("usd") // Assuming USD; replace with dynamic value if needed
-            .putAllMetadata(Map.of("userId", userId, "candidateId", candidateId))
+            .putAllMetadata(Map.of("userId", donation.getUserId(), "candidateId", donation.getCandidateId()))
             .build();   
 
         PaymentIntent intent = PaymentIntent.create(params);
 
         // 2. Save the donation with payment information (pending status)
-        Donation donation = new Donation();
-        donation.setUserId(userId);
-        donation.setCandidateId(candidateId);
-        donation.setAmount(amount);
         donation.setPaymentIntentId(intent.getId()); // Save the PaymentIntent ID
         donation.setStatus("pending"); // Status could be 'pending', 'succeeded', or 'failed'
 
@@ -95,5 +81,13 @@ public class DonationService {
             .orElseThrow(() -> new ResourceNotFoundException("Donation not found"));
         donation.setStatus(status);
         donationRepository.save(donation);
+    }
+
+    public List<Donation> getDonationsByUserId(String userId) {
+        return donationRepository.findByUserId(userId);
+    }
+
+    public List<Donation> getDonationsByCandidateId(String candidateId) {
+        return donationRepository.findByCandidateId(candidateId);
     }
 }

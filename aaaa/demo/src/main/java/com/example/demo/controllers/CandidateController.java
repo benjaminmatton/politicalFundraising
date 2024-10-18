@@ -1,11 +1,13 @@
 package com.example.demo.controllers;
 
 
+import com.example.demo.dto.CandidateRequest;
 import com.example.demo.entities.Candidate;
-import com.example.demo.repositories.CandidateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.example.demo.services.CandidateService;
 
 import java.util.List;
 
@@ -16,83 +18,85 @@ import java.util.List;
 @RequestMapping("/api/candidates")
 public class CandidateController {
 
+
     @Autowired
-    private CandidateRepository candidateRepository;
+    private CandidateService candidateService;
 
     /**
      * Retrieves all candidates.
-     * @return List of all candidates
+     * @return ResponseEntity containing a list of all candidates
      */
     @GetMapping
-    public List<Candidate> getAllCandidates() {
-        return candidateRepository.findAll();
+    public ResponseEntity<List<Candidate>> getAllCandidates() {
+        List<Candidate> candidates = candidateService.getAllCandidates();
+        return ResponseEntity.ok(candidates);
     }
 
     /**
      * Retrieves candidates by their name.
      * @param name The name of the candidate to search for
-     * @return List of candidates matching the given name
+     * @return ResponseEntity containing a list of candidates matching the given name
      */
     @GetMapping("/search")
-    public List<Candidate> getCandidatesByName(@RequestParam String name) {
-        return candidateRepository.findByNameContainingIgnoreCase(name);
+    public ResponseEntity<List<Candidate>> getCandidateByName(@RequestParam String name) {
+        List<Candidate> candidates = candidateService.getCandidateByName(name);
+        return ResponseEntity.ok(candidates);
     }
 
     /**
      * Retrieves a candidate by their ID.
+     * 
      * @param id The ID of the candidate
      * @return ResponseEntity containing the candidate if found, or a not found status
      */
     @GetMapping("/{id}")
     public ResponseEntity<Candidate> getCandidateById(@PathVariable String id) {
-        return candidateRepository.findById(id)
-            .map(ResponseEntity::ok)
-            .orElse(ResponseEntity.notFound().build());
+        Candidate candidate = candidateService.getCandidateById(id);
+        return ResponseEntity.ok(candidate);  // Automatically returns 200 OK with the candidate
     }
 
     /**
      * Creates a new candidate.
      * @param candidate The candidate object to be created
-     * @return The created candidate
+     * @return ResponseEntity containing the created candidate
      */
     @PostMapping
-    public Candidate createCandidate(@RequestBody Candidate candidate) {
-        return candidateRepository.save(candidate);
+    public ResponseEntity<Candidate> createCandidate(@RequestBody CandidateRequest candidate) {
+        Candidate createdCandidate = candidateService.addCandidate(candidate);
+        return new ResponseEntity<>(createdCandidate, HttpStatus.CREATED);
     }
 
     /**
-     * Updates an existing candidate.
+     * Updates a candidate.
      * @param id The ID of the candidate to update
      * @param candidateDetails The updated candidate details
-     * @return ResponseEntity containing the updated candidate if found, or a not found status
+     * @return ResponseEntity containing the updated candidate
      */
     @PutMapping("/{id}")
-    public ResponseEntity<Candidate> updateCandidate(@PathVariable String id, @RequestBody Candidate candidateDetails) {
-        return candidateRepository.findById(id)
-            .map(candidate -> {
-                candidate.setName(candidateDetails.getName());
-                candidate.setParty(candidateDetails.getParty());
-                candidate.setDescription(candidateDetails.getDescription());
-                candidate.setImageUrl(candidateDetails.getImageUrl());
-                return ResponseEntity.ok(candidateRepository.save(candidate));
-            })
-            .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<Candidate> updateCandidate(
+            @PathVariable String id, 
+            @RequestBody CandidateRequest candidate) {
+
+        Candidate updatedCandidate = candidateService.updateCandidate(id, candidate);
+        return ResponseEntity.ok(updatedCandidate);
     }
 
     /**
      * Deletes a candidate.
+     * 
      * @param id The ID of the candidate to delete
-     * @return ResponseEntity with no content if successful, or a not found status
+     * @return ResponseEntity with no content if successful
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteCandidate(@PathVariable String id) {
-        return candidateRepository.findById(id)
-            .map(candidate -> {
-                candidateRepository.delete(candidate);
-                return ResponseEntity.noContent().build();
-            })
-            .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<Void> deleteCandidate(@PathVariable String id) {
+        candidateService.deleteCandidate(id);
+        return ResponseEntity.noContent().build();  // 204 No Content
     }
 
-    
+    @PutMapping("/update-scores")
+    public ResponseEntity<String> updateScores() {
+        candidateService.updateIssueCandidateScores();
+        return ResponseEntity.ok("Candidate scores updated successfully.");
+    }
+
 }
