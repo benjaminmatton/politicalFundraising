@@ -51,21 +51,21 @@ public class DonationController {
         List<Donation> donations = donationService.getDonationsByCandidateId(candidateId);
         return ResponseEntity.ok(donations);
     }
-
+    
     /**
-     * Processes a donation request and creates a Stripe PaymentIntent.
-     * @param donationRequest The donation request containing amount and currency
-     * @return ResponseEntity containing the client secret for the PaymentIntent
+     * Handles the donation process.
+     * @param donationRequest The donation request containing amount, user ID, and candidate ID
+     * @return ResponseEntity containing the client secret for the payment intent
      */
     @PostMapping("/donate")
     public ResponseEntity<Map<String, String>> donate(@RequestBody DonationRequest donationRequest) {
         try {
-            String clientSecret = paymentService.createPaymentIntent(
-                donationRequest.getAmount(),
-                donationRequest.getCurrency(),
-                donationRequest.getCandidateId(),
-                donationRequest.getUserId()
-            );
+            Donation donation = new Donation();
+            donation.setAmount(donationRequest.getAmount());
+            donation.setUserId(donationRequest.getUserId());
+            donation.setCandidateId(donationRequest.getCandidateId());
+
+            String clientSecret = donationService.donate(donation);
 
             Map<String, String> response = new HashMap<>();
             response.put("clientSecret", clientSecret);

@@ -22,6 +22,8 @@ public class User {
     /** Set of issues the user is interested in */
     private Set<Issue> issues = new HashSet<>();
 
+    private Set<String> roles = new HashSet<>();
+
     // Getters
     /**
      * Gets the user's unique identifier.
@@ -88,4 +90,11 @@ public class User {
         this.issues = issues;
     }
 
+    public Set<String> getRoles() {
+        return roles;
+    }       
+
+    public void setRoles(Set<String> roles) {
+        this.roles = roles;
+    }
 }
